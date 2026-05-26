@@ -4,10 +4,13 @@
     {
         public int Id { get; set; }
 
+        public string Titulo { get; set; } = string.Empty;
+
         public string Descricao { get; set; } = string.Empty;
 
         public decimal Valor { get; set; }
 
+        // Alterado de DataMovimentacao para Data
         public DateTime Data { get; set; }
 
         public string Tipo { get; set; } = string.Empty;

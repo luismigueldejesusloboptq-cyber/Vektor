@@ -19,6 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="DTOs\Usuario\Response\" />
     <Folder Include="Repositories\" />
   </ItemGroup>
 

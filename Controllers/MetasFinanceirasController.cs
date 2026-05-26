@@ -25,9 +25,19 @@ namespace Vector_API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var usuarioId = int.Parse(
-                User.FindFirst("nameid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)!.Value
-            );
+            var usuarioIdClaim =
+    User.FindFirst("nameid")?.Value;
+
+            if (usuarioIdClaim == null)
+            {
+                return Unauthorized(new
+                {
+                    message = "Usuário não autenticado"
+                });
+            }
+
+            var usuarioId =
+                int.Parse(usuarioIdClaim);
 
             var metas = await _context.MetasFinanceiras
                 .Where(m => m.UsuarioId == usuarioId)
@@ -50,9 +60,19 @@ namespace Vector_API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var usuarioId = int.Parse(
-                User.FindFirst("nameid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)!.Value
-            );
+            var usuarioIdClaim =
+     User.FindFirst("nameid")?.Value;
+
+            if (usuarioIdClaim == null)
+            {
+                return Unauthorized(new
+                {
+                    message = "Usuário não autenticado"
+                });
+            }
+
+            var usuarioId =
+                int.Parse(usuarioIdClaim);
 
             var meta = await _context.MetasFinanceiras
                 .Where(m => m.Id == id && m.UsuarioId == usuarioId)
@@ -80,9 +100,19 @@ namespace Vector_API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CreateMetaFinanceiraRequestDto dto)
         {
-            var usuarioId = int.Parse(
-                User.FindFirst("nameid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)!.Value
-            );
+            var usuarioIdClaim =
+    User.FindFirst("nameid")?.Value;
+
+            if (usuarioIdClaim == null)
+            {
+                return Unauthorized(new
+                {
+                    message = "Usuário não autenticado"
+                });
+            }
+
+            var usuarioId =
+                int.Parse(usuarioIdClaim); ;
 
             var meta = new MetaFinanceira
             {
@@ -104,9 +134,19 @@ namespace Vector_API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, UpdateMetaFinanceiraRequestDto dto)
         {
-            var usuarioId = int.Parse(
-                User.FindFirst("nameid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)!.Value
-            );
+            var usuarioIdClaim =
+     User.FindFirst("nameid")?.Value;
+
+            if (usuarioIdClaim == null)
+            {
+                return Unauthorized(new
+                {
+                    message = "Usuário não autenticado"
+                });
+            }
+
+            var usuarioId =
+                int.Parse(usuarioIdClaim);
 
             var meta = await _context.MetasFinanceiras
                 .FirstOrDefaultAsync(m => m.Id == id && m.UsuarioId == usuarioId);
@@ -130,9 +170,19 @@ namespace Vector_API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var usuarioId = int.Parse(
-                User.FindFirst("nameid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)!.Value
-            );
+            var usuarioIdClaim =
+    User.FindFirst("nameid")?.Value;
+
+            if (usuarioIdClaim == null)
+            {
+                return Unauthorized(new
+                {
+                    message = "Usuário não autenticado"
+                });
+            }
+
+            var usuarioId =
+                int.Parse(usuarioIdClaim);
 
             var meta = await _context.MetasFinanceiras
                 .FirstOrDefaultAsync(m => m.Id == id && m.UsuarioId == usuarioId);

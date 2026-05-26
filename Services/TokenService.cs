@@ -22,11 +22,9 @@ namespace Vector_API.Services
                 _configuration["Jwt:Key"]!
             );
 
-            // Usando as strings diretas das chaves oficiais do JWT.
-            // Isso ignora COMPLETAMENTE o ClaimTypes do .NET e resolve o erro do BinaryReader.
             var listaClaims = new List<Claim>
             {
-                new Claim("nameId", usuario.Id.ToString()),
+                new Claim("nameid", usuario.Id.ToString()),
                 new Claim("unique_name", usuario.Nome),
                 new Claim("email", usuario.Email)
             };
@@ -34,17 +32,24 @@ namespace Vector_API.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(listaClaims),
+
                 Expires = DateTime.UtcNow.AddHours(8),
+
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature
                 ),
+
                 Issuer = _configuration["Jwt:Issuer"],
+
                 Audience = _configuration["Jwt:Audience"]
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+
+            var token = tokenHandler.CreateToken(
+                tokenDescriptor
+            );
 
             return tokenHandler.WriteToken(token);
         }

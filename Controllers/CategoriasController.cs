@@ -25,10 +25,20 @@ namespace Vector_API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            // Lê de forma segura tanto o padrão JWT puro quanto o do .NET
-            var usuarioId = int.Parse(
-                User.FindFirst("nameid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)!.Value
-            );
+            // Busca o ID de forma flexível (independente de maiúsculas/minúsculas ou do padrão .NET)
+            var usuarioIdClaim = User.FindFirst("nameid")?.Value
+                              ?? User.FindFirst("nameId")?.Value
+                              ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (usuarioIdClaim == null)
+            {
+                return Unauthorized(new { message = "Usuário não autenticado" });
+            }
+
+            if (!int.TryParse(usuarioIdClaim, out var usuarioId))
+            {
+                return BadRequest(new { message = "O ID do usuário fornecido no token é inválido." });
+            }
 
             var categories = await _context.Categorias
                 .Where(c => c.UsuarioId == usuarioId)
@@ -47,9 +57,19 @@ namespace Vector_API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var usuarioId = int.Parse(
-                User.FindFirst("nameid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)!.Value
-            );
+            var usuarioIdClaim = User.FindFirst("nameid")?.Value
+                              ?? User.FindFirst("nameId")?.Value
+                              ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (usuarioIdClaim == null)
+            {
+                return Unauthorized(new { message = "Usuário não autenticado" });
+            }
+
+            if (!int.TryParse(usuarioIdClaim, out var usuarioId))
+            {
+                return BadRequest(new { message = "O ID do usuário fornecido no token é inválido." });
+            }
 
             var categoria = await _context.Categorias
                 .Where(c => c.id == id && c.UsuarioId == usuarioId)
@@ -71,9 +91,19 @@ namespace Vector_API.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(CategoriaRequestDto dto)
         {
-            var usuarioId = int.Parse(
-                User.FindFirst("nameid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)!.Value
-            );
+            var usuarioIdClaim = User.FindFirst("nameid")?.Value
+                              ?? User.FindFirst("nameId")?.Value
+                              ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (usuarioIdClaim == null)
+            {
+                return Unauthorized(new { message = "Usuário não autenticado" });
+            }
+
+            if (!int.TryParse(usuarioIdClaim, out var usuarioId))
+            {
+                return BadRequest(new { message = "O ID do usuário fornecido no token é inválido." });
+            }
 
             var categoria = new Categoria
             {
@@ -97,9 +127,19 @@ namespace Vector_API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, CategoriaRequestDto dto)
         {
-            var usuarioId = int.Parse(
-                User.FindFirst("nameid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)!.Value
-            );
+            var usuarioIdClaim = User.FindFirst("nameid")?.Value
+                              ?? User.FindFirst("nameId")?.Value
+                              ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (usuarioIdClaim == null)
+            {
+                return Unauthorized(new { message = "Usuário não autenticado" });
+            }
+
+            if (!int.TryParse(usuarioIdClaim, out var usuarioId))
+            {
+                return BadRequest(new { message = "O ID do usuário fornecido no token é inválido." });
+            }
 
             var categoria = await _context.Categorias
                 .FirstOrDefaultAsync(c => c.id == id && c.UsuarioId == usuarioId);
@@ -119,9 +159,19 @@ namespace Vector_API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var usuarioId = int.Parse(
-                User.FindFirst("nameid")?.Value ?? User.FindFirst(ClaimTypes.NameIdentifier)!.Value
-            );
+            var usuarioIdClaim = User.FindFirst("nameid")?.Value
+                              ?? User.FindFirst("nameId")?.Value
+                              ?? User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (usuarioIdClaim == null)
+            {
+                return Unauthorized(new { message = "Usuário não autenticado" });
+            }
+
+            if (!int.TryParse(usuarioIdClaim, out var usuarioId))
+            {
+                return BadRequest(new { message = "O ID do usuário fornecido no token é inválido." });
+            }
 
             var categoria = await _context.Categorias
                 .FirstOrDefaultAsync(c => c.id == id && c.UsuarioId == usuarioId);

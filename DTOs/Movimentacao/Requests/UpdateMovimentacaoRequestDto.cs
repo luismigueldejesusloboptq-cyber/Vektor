@@ -12,7 +12,7 @@
 
         public string Tipo { get; set; } = string.Empty;
 
-        public DateTime DataMovimentacao { get; set; }
+        // Alterado de DataMovimentacao para Data
         public DateTime Data { get; set; }
     }
 }

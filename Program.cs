@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 using Vector_API.Data;
 using Vector_API.Services;
@@ -15,30 +16,31 @@ builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen(options =>
 {
-    options.SwaggerDoc("v1", new()
+    options.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "Vektor API",
         Version = "v1"
     });
 
-    options.AddSecurityDefinition("Bearer", new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+    // JWT no Swagger
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
-        Type = Microsoft.OpenApi.Models.SecuritySchemeType.Http,
+        Type = SecuritySchemeType.Http,
         Scheme = "bearer",
         BearerFormat = "JWT",
-        In = Microsoft.OpenApi.Models.ParameterLocation.Header,
+        In = ParameterLocation.Header,
         Description = "Digite: Bearer SEU_TOKEN"
     });
 
-    options.AddSecurityRequirement(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
-            new Microsoft.OpenApi.Models.OpenApiSecurityScheme
+            new OpenApiSecurityScheme
             {
-                Reference = new Microsoft.OpenApi.Models.OpenApiReference
+                Reference = new OpenApiReference
                 {
-                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme,
+                    Type = ReferenceType.SecurityScheme,
                     Id = "Bearer"
                 }
             },
@@ -47,17 +49,19 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+// Connection String
+var connectionString =
+    builder.Configuration.GetConnectionString("DefaultConnection");
+
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    var connectionString = builder.Configuration
-        .GetConnectionString("DefaultConnection");
-
     options.UseMySql(
         connectionString,
         ServerVersion.AutoDetect(connectionString)
     );
 });
 
+// Services
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
@@ -65,55 +69,68 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 // JWT
 var jwtKey = builder.Configuration["Jwt:Key"];
 
-var key = Encoding.UTF8.GetBytes(jwtKey!);
-
-builder.Services.AddAuthentication(options =>
+if (string.IsNullOrEmpty(jwtKey))
 {
-    options.DefaultAuthenticateScheme =
-        JwtBearerDefaults.AuthenticationScheme;
+    throw new Exception("JWT Key não configurada.");
+}
 
-    options.DefaultChallengeScheme =
-        JwtBearerDefaults.AuthenticationScheme;
-})
-.AddJwtBearer(options =>
-{
-    options.RequireHttpsMetadata = false;
+var key = Encoding.UTF8.GetBytes(jwtKey);
 
-    options.SaveToken = true;
-
-    options.TokenValidationParameters = new TokenValidationParameters
+builder.Services
+    .AddAuthentication(options =>
     {
-        ValidateIssuerSigningKey = true,
+        options.DefaultAuthenticateScheme =
+            JwtBearerDefaults.AuthenticationScheme;
 
-        IssuerSigningKey = new SymmetricSecurityKey(key),
+        options.DefaultChallengeScheme =
+            JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = false;
 
-        ValidateIssuer = true,
+        options.SaveToken = true;
 
-        ValidateAudience = true,
+        options.TokenValidationParameters =
+            new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
 
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                IssuerSigningKey =
+                    new SymmetricSecurityKey(key),
 
-        ValidAudience = builder.Configuration["Jwt:Audience"],
+                ValidateIssuer = true,
 
-        ValidateLifetime = true,
+                ValidateAudience = true,
 
-        ClockSkew = TimeSpan.Zero
-    };
-});
+                ValidIssuer =
+                    builder.Configuration["Jwt:Issuer"],
 
+                ValidAudience =
+                    builder.Configuration["Jwt:Audience"],
+
+                ValidateLifetime = true,
+
+                ClockSkew = TimeSpan.Zero
+            };
+    });
+
+// CORS
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
+    options.AddPolicy("AllowAngular",
         policy =>
         {
-            policy.AllowAnyOrigin()
-                  .AllowAnyMethod()
-                  .AllowAnyHeader();
+            policy
+                .WithOrigins("http://localhost:4200")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
         });
 });
 
 var app = builder.Build();
 
+// Swagger
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -123,7 +140,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("AllowAll");
+app.UseCors("AllowAngular");
 
 app.UseAuthentication();
 
