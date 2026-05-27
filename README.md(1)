@@ -1,0 +1,248 @@
+# Vektor Intelligence
+
+## Descrição do Projeto
+
+O **Vektor Intelligence** é uma plataforma web desenvolvida para gerenciamento financeiro pessoal, permitindo o controle de receitas, despesas e movimentações financeiras de forma prática, moderna e inteligente.
+
+O sistema oferece recursos analíticos através de dashboards e gráficos dinâmicos, auxiliando os usuários na visualização e acompanhamento da vida financeira em tempo real.
+
+Além disso, a plataforma conta com uma Inteligência Artificial integrada denominada **Vektor AI**, responsável por auxiliar os usuários com orientações sobre educação financeira, economia, organização de gastos e planejamento financeiro.
+
+O projeto foi desenvolvido utilizando arquitetura Full Stack, com frontend em Angular e backend em ASP.NET Core Web API.
+
+---
+
+# Tecnologias Utilizadas
+
+### Linguagens
+
+* TypeScript
+* C#
+
+### Frameworks
+
+* Angular
+* ASP.NET Core Web API
+
+### Banco de Dados
+
+* SQL Server
+
+### Segurança
+
+* JWT Authentication
+* Autenticação baseada em Token
+
+### Documentação de API
+
+* Swagger / OpenAPI
+
+### Bibliotecas e Recursos
+
+* Chart.js
+* Entity Framework Core
+* RxJS
+
+### Inteligência Artificial
+
+* xAI Grok API
+
+---
+
+# Instruções de Execução
+
+Para executar o projeto localmente, siga os passos abaixo.
+
+## 1. Clonar o Repositório
+
+```bash
+git clone URL_DO_REPOSITORIO
+```
+
+---
+
+## 2. Configurar o Backend
+
+Abra a solução da API no Visual Studio.
+
+Atualize a connection string no arquivo:
+
+```bash
+appsettings.json
+```
+
+---
+
+## 3. Executar as Migrations
+
+Execute os comandos abaixo para criar as tabelas no banco de dados:
+
+```bash
+Update-Database
+```
+
+ou
+
+```bash
+dotnet ef database update
+```
+
+---
+
+## 4. Executar a API
+
+Inicie o projeto ASP.NET Core Web API.
+
+A API estará disponível em:
+
+```bash
+https://localhost:7281
+```
+
+A documentação Swagger poderá ser acessada em:
+
+```bash
+https://localhost:7281/swagger
+```
+
+---
+
+## 5. Executar o Frontend Angular
+
+Abra o terminal na pasta do frontend e execute:
+
+```bash
+npm install
+```
+
+Após a instalação das dependências, execute:
+
+```bash
+ng serve
+```
+
+O sistema estará disponível em:
+
+```bash
+http://localhost:4200
+```
+
+---
+
+# Endpoints da API
+
+Abaixo estão os principais endpoints disponíveis no sistema.
+
+---
+
+## Autenticação
+
+### Login de Usuário
+
+```http
+POST /api/auth/login
+```
+
+### Cadastro de Usuário
+
+```http
+POST /api/auth/register
+```
+
+---
+
+## Movimentações Financeiras
+
+### Listar Movimentações
+
+```http
+GET /api/movimentacoes
+```
+
+### Buscar Movimentação por ID
+
+```http
+GET /api/movimentacoes/{id}
+```
+
+### Criar Movimentação
+
+```http
+POST /api/movimentacoes
+```
+
+### Atualizar Movimentação
+
+```http
+PUT /api/movimentacoes/{id}
+```
+
+### Remover Movimentação
+
+```http
+DELETE /api/movimentacoes/{id}
+```
+
+---
+
+## Dashboard Financeiro
+
+### Obter Dados do Dashboard
+
+```http
+GET /api/dashboard
+```
+
+---
+
+## Inteligência Artificial
+
+### Enviar Pergunta para a IA
+
+```http
+POST /api/ai/chat
+```
+
+---
+
+# Funcionalidades Principais
+
+* Cadastro e autenticação de usuários
+* Controle de receitas e despesas
+* Dashboard financeiro inteligente
+* Gráficos financeiros dinâmicos
+* Visualização de saldo financeiro
+* Gestão de movimentações
+* Insights financeiros
+* Inteligência Artificial integrada
+* Interface responsiva e moderna
+
+---
+
+# Arquitetura do Projeto
+
+O sistema foi desenvolvido seguindo o padrão de arquitetura em camadas:
+
+* Frontend
+* API
+* Services
+* Repositories
+* Banco de Dados
+
+O backend utiliza ASP.NET Core Web API juntamente com Entity Framework Core para persistência de dados.
+
+O frontend foi desenvolvido utilizando Angular com componentes standalone e integração com APIs REST.
+
+---
+
+# Autor
+
+Desenvolvido por:
+
+Luis Miguel de Jesus Lobo
+
+---
+
+# Licença
+
+Este projeto foi desenvolvido para fins acadêmicos e educacionais.
